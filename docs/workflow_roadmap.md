@@ -208,7 +208,7 @@ touch src/services/.gitkeep src/hooks/.gitkeep src/theme/.gitkeep src/types/.git
 touch src/utils/.gitkeep src/constants/.gitkeep
 ```
 
-- [ ] README.md 업데이트 (개발 가이드 포함) ⚠️ 대기 중
+- [x] README.md 업데이트 (개발 가이드 포함)
 
 ```bash
 git add src/ README.md
@@ -313,12 +313,14 @@ git worktree remove ../RnGeolocation-phase-0  # worktree 사용 시
 
 ### ✅ Phase 0 완료 기준
 
-- [x] 모든 구현 작업 체크박스 완료 (빌드 검증 제외)
-- [ ] 모든 테스트 작업 체크박스 완료 ⏳ 사용자 작업 필요
-- [ ] Android 빌드 성공 ⏳ npm install 후 실행 필요
-- [ ] iOS 빌드 성공 ⏳ pod install 후 실행 필요
-- [ ] PR 생성 및 머지 완료 ⏳ 빌드 검증 후 진행
+- [x] 모든 구현 작업 체크박스 완료
+- [ ] 모든 테스트 작업 체크박스 완료 ⏳ **사용자 작업**: `npm install` → `pod install` → 빌드 테스트
+- [ ] Android 빌드 성공 ⏳ **사용자 작업**: `npm run android`
+- [ ] iOS 빌드 성공 ⏳ **사용자 작업**: `npm run ios`
+- [ ] PR 생성 및 머지 완료 ⏳ **사용자 작업**: 빌드 검증 후 PR 생성
 - [x] /sc:save 실행 완료
+
+**현재 상태**: 코드 구현 완료 ✅ | 빌드 검증 대기 중 ⏳
 
 ---
 
