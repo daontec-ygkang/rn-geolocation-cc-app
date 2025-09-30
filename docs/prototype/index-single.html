@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="모션 감지 애플리케이션 프로토타입">
+  <title>모션 감지 앱 - 프로토타입</title>
+
+  <style>
+    /* ===== CSS Variables ===== */
+    :root {
+      /* Color Palette */
+      --color-primary: #2563eb;
+      --color-primary-dark: #1e40af;
+      --color-primary-light: #3b82f6;
+      --color-success: #10b981;
+      --color-success-dark: #059669;
+      --color-success-light: #34d399;
+      --color-warning: #f59e0b;
+      --color-warning-dark: #d97706;
+      --color-warning-light: #fbbf24;
+      --color-danger: #ef4444;
+      --color-danger-dark: #dc2626;
+      --color-danger-light: #f87171;
+      --color-neutral-50: #f9fafb;
+      --color-neutral-100: #f3f4f6;
+      --color-neutral-200: #e5e7eb;
+      --color-neutral-300: #d1d5db;
+      --color-neutral-400: #9ca3af;
+      --color-neutral-500: #6b7280;
+      --color-neutral-600: #4b5563;
+      --color-neutral-700: #374151;
+      --color-neutral-800: #1f2937;
+      --color-neutral-900: #111827;
+
+      /* Semantic Colors */
+      --color-background: #ffffff;
+      --color-surface: var(--color-neutral-50);
+      --color-text: var(--color-neutral-900);
+      --color-text-secondary: var(--color-neutral-600);
+      --color-border: var(--color-neutral-200);
+      --color-shadow: rgba(0, 0, 0, 0.1);
+
+      /* Activity Status Colors */
+      --color-walking: var(--color-success);
+      --color-running: var(--color-warning);
+      --color-inactive: var(--color-neutral-400);
+
+      /* Spacing Scale */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      --spacing-3xl: 4rem;
+
+      /* Typography */
+      --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+      --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-size-3xl: 1.875rem;
+      --font-size-4xl: 2.25rem;
+      --font-size-5xl: 3rem;
+      --font-weight-light: 300;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+
+      /* Border Radius */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 var(--color-shadow);
+      --shadow-md: 0 4px 6px -1px var(--color-shadow);
+      --shadow-lg: 0 10px 15px -3px var(--color-shadow);
+      --shadow-xl: 0 20px 25px -5px var(--color-shadow);
+
+      /* Transitions */
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Z-Index Scale */
+      --z-base: 0;
+      --z-dropdown: 100;
+      --z-sticky: 200;
+      --z-fixed: 300;
+      --z-modal-backdrop: 400;
+      --z-modal: 500;
+      --z-popover: 600;
+      --z-tooltip: 700;
+
+      /* Component Specific */
+      --button-height: 48px;
+      --input-height: 44px;
+      --nav-height: 60px;
+      --card-padding: var(--spacing-lg);
+      --container-max-width: 1200px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --transition-fast: 0ms;
+        --transition-base: 0ms;
+        --transition-slow: 0ms;
+      }
+    }
+
+    /* ===== Base Styles ===== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-normal);
+      line-height: var(--line-height-normal);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      min-height: 100vh;
+      transition: background-color var(--transition-base), color var(--transition-base);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: var(--font-weight-bold);
+      line-height: var(--line-height-tight);
+      margin-bottom: var(--spacing-md);
+    }
+
+    h1 { font-size: var(--font-size-4xl); }
+    h2 { font-size: var(--font-size-3xl); }
+    h3 { font-size: var(--font-size-2xl); }
+    h4 { font-size: var(--font-size-xl); }
+    h5 { font-size: var(--font-size-lg); }
+    h6 { font-size: var(--font-size-base); }
+
+    p {
+      margin-bottom: var(--spacing-md);
+    }
+
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    a:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    ul, ol {
+      margin-bottom: var(--spacing-md);
+      padding-left: var(--spacing-xl);
+    }
+
+    li {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    ::selection {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container-max-width);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--spacing-md);
+      padding-right: var(--spacing-md);
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding-left: var(--spacing-lg);
+        padding-right: var(--spacing-lg);
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ===== Component Styles ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: var(--button-height);
+      padding: 0 var(--spacing-xl);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+      text-align: center;
+      white-space: nowrap;
+      user-select: none;
+      min-width: 120px;
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-success {
+      background-color: var(--color-success);
+      color: white;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background-color: var(--color-success-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-danger {
+      background-color: var(--color-danger);
+      color: white;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background-color: var(--color-danger-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--color-border);
+      color: var(--color-text);
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background-color: var(--color-surface);
+    }
+
+    .btn-large {
+      height: 56px;
+      font-size: var(--font-size-lg);
+      padding: 0 var(--spacing-2xl);
+      min-width: 160px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    .card {
+      background-color: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: var(--card-padding);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition-base);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--spacing-xs) var(--spacing-md);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .badge-success {
+      background-color: var(--color-success);
+      color: white;
+    }
+
+    .badge-warning {
+      background-color: var(--color-warning);
+      color: white;
+    }
+
+    .badge-inactive {
+      background-color: var(--color-neutral-300);
+      color: var(--color-neutral-700);
+    }
+
+    .badge-large {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      font-size: var(--font-size-base);
+    }
+
+    .status-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-2xl);
+      text-align: center;
+    }
+
+    .status-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: var(--spacing-xl);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-5xl);
+      transition: all var(--transition-base);
+    }
+
+    .status-icon.walking {
+      background-color: var(--color-success);
+      color: white;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-icon.running {
+      background-color: var(--color-warning);
+      color: white;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-icon.inactive {
+      background-color: var(--color-neutral-200);
+      color: var(--color-neutral-500);
+    }
+
+    .status-text {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .status-subtext {
+      font-size: var(--font-size-base);
+      color: var(--color-text-secondary);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text);
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      height: var(--input-height);
+      padding: 0 var(--spacing-md);
+      font-size: var(--font-size-base);
+      color: var(--color-text);
+      background-color: var(--color-background);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+
+    .form-textarea {
+      height: auto;
+      min-height: 120px;
+      padding: var(--spacing-md);
+      resize: vertical;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-help {
+      display: block;
+      margin-top: var(--spacing-sm);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 32px;
+    }
+
+    .toggle-input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--color-neutral-300);
+      border-radius: var(--radius-full);
+      transition: background-color var(--transition-base);
+    }
+
+    .toggle-slider::before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform var(--transition-base);
+    }
+
+    .toggle-input:checked + .toggle-slider {
+      background-color: var(--color-primary);
+    }
+
+    .toggle-input:checked + .toggle-slider::before {
+      transform: translateX(24px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      height: var(--nav-height);
+      padding: 0 var(--spacing-md);
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .nav-brand {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      margin-left: auto;
+      gap: var(--spacing-md);
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-md);
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .nav-item a:hover,
+    .nav-item a.active {
+      color: var(--color-primary);
+      background-color: var(--color-neutral-100);
+      text-decoration: none;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      height: var(--nav-height);
+      background-color: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      z-index: var(--z-fixed);
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .bottom-nav-item.active {
+      color: var(--color-primary);
+    }
+
+    .bottom-nav-icon {
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    @media (min-width: 768px) {
+      .bottom-nav {
+        display: none;
+      }
+    }
+
+    .alert {
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .alert-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--color-success);
+      color: var(--color-success-dark);
+    }
+
+    .alert-info {
+      background-color: rgba(37, 99, 235, 0.1);
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary-dark);
+    }
+
+    .logs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-xl);
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+    }
+
+    .logs-controls {
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: center;
+    }
+
+    .logs-stats {
+      display: flex;
+      gap: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      padding: var(--spacing-lg);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-size-sm);
+    }
+
+    .logs-stats > div {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logs-stats span {
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+    }
+
+    .logs-container {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .log-time {
+      color: var(--color-text-secondary);
+      min-width: 100px;
+    }
+
+    .log-type {
+      font-size: var(--font-size-xs);
+      min-width: 80px;
+    }
+
+    .log-message {
+      flex: 1;
+      color: var(--color-text);
+    }
+
+    .log-entry[data-type="vehicle"] {
+      background: rgba(37, 99, 235, 0.03);
+    }
+
+    .log-entry[data-type="motion"] {
+      background: rgba(16, 185, 129, 0.03);
+    }
+
+    .log-entry[data-type="system"] {
+      background: rgba(107, 114, 128, 0.03);
+    }
+
+    .test-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-xl);
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .tab-btn {
+      padding: var(--spacing-md) var(--spacing-xl);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-bottom: -2px;
+    }
+
+    .tab-btn:hover {
+      color: var(--color-text);
+      background: var(--color-surface);
+    }
+
+    .tab-btn.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn var(--transition-base);
+    }
+
+    /* ===== Animations ===== */
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn var(--transition-base) ease-out;
+    }
+
+    .animate-fadeOut {
+      animation: fadeOut var(--transition-base) ease-out;
+    }
+
+    .animate-bounce {
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ===== SPA Page System ===== */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* Home page specific styles */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--spacing-xl);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+      margin-bottom: var(--spacing-lg);
+      color: white;
+    }
+
+    .hero p {
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--spacing-2xl);
+      opacity: 0.9;
+      max-width: 600px;
+    }
+
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--spacing-xl);
+      padding: var(--spacing-2xl) 0;
+    }
+
+    .screen-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      text-align: center;
+      transition: transform var(--transition-base), box-shadow var(--transition-base);
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .screen-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .screen-card-icon {
+      font-size: 4rem;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .screen-card h3 {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .screen-card p {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    /* Permission page specific styles */
+    .permission-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-xl);
+    }
+
+    .permission-content {
+      max-width: 600px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation (hidden on home page) -->
+  <nav class="nav" id="topNav" style="display: none;">
+    <div class="nav-brand" data-page="home">모션 감지</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a data-page="dashboard">대시보드</a></li>
+      <li class="nav-item"><a data-page="logs">로그</a></li>
+      <li class="nav-item"><a data-page="settings">설정</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page: Home -->
+  <section id="page-home" class="page active">
+    <div class="hero">
+      <div class="animate-fadeIn">
+        <div style="font-size: 6rem; margin-bottom: var(--spacing-xl);" class="animate-bounce" role="img" aria-label="앱 아이콘">🏃</div>
+        <h1>모션 감지 앱</h1>
+        <p>
+          차량 하차 후 걷기와 뛰기 활동을<br>
+          실시간으로 감지하는 React Native 앱
+        </p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-large" style="background: white; color: var(--color-primary);" data-page="dashboard">
+            시작하기
+          </button>
+          <button class="btn btn-large btn-outline" style="border-color: white; color: white;" data-page="permissions">
+            권한 설정
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section class="container" style="padding: var(--spacing-3xl) var(--spacing-xl);">
+      <header style="text-align: center; margin-bottom: var(--spacing-3xl);">
+        <h2 style="font-size: var(--font-size-3xl); margin-bottom: var(--spacing-md);">프로토타입 화면</h2>
+        <p style="font-size: var(--font-size-lg); color: var(--color-text-secondary);">
+          HTML, CSS, JavaScript로 구현된 완전한 인터랙티브 프로토타입
+        </p>
+      </header>
+
+      <div class="screen-grid">
+        <div class="screen-card" data-page="dashboard">
+          <div class="screen-card-icon">🏠</div>
+          <h3>대시보드</h3>
+          <p>실시간 활동 감지 및 제어</p>
+          <span class="btn btn-primary btn-block">보기</span>
+        </div>
+
+        <div class="screen-card" data-page="permissions">
+          <div class="screen-card-icon">🔐</div>
+          <h3>권한 설정</h3>
+          <p>위치 및 활동 권한 요청</p>
+          <span class="btn btn-primary btn-block">보기</span>
+        </div>
+
+        <div class="screen-card" data-page="logs">
+          <div class="screen-card-icon">📋</div>
+          <h3>로그 뷰어</h3>
+          <p>테스트 로그 및 이벤트 기록</p>
+          <span class="btn btn-primary btn-block">보기</span>
+        </div>
+
+        <div class="screen-card" data-page="settings">
+          <div class="screen-card-icon">⚙️</div>
+          <h3>설정</h3>
+          <p>앱 환경설정 및 관리</p>
+          <span class="btn btn-primary btn-block">보기</span>
+        </div>
+      </div>
+    </section>
+
+    <section style="background: var(--color-surface); padding: var(--spacing-3xl) var(--spacing-xl);">
+      <div class="container">
+        <header style="text-align: center; margin-bottom: var(--spacing-3xl);">
+          <h2 style="font-size: var(--font-size-3xl); margin-bottom: var(--spacing-md);">프로토타입 기능</h2>
+        </header>
+
+        <div class="screen-grid">
+          <div class="card">
+            <div style="font-size: var(--font-size-4xl); margin-bottom: var(--spacing-md);">🎨</div>
+            <h3 style="margin-bottom: var(--spacing-sm);">모던 UI/UX</h3>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+              Material Design과 iOS HIG를 따르는 세련된 인터페이스
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: var(--font-size-4xl); margin-bottom: var(--spacing-md);">📱</div>
+            <h3 style="margin-bottom: var(--spacing-sm);">완전 반응형</h3>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+              모바일, 태블릿, 데스크톱 모든 화면에 최적화
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: var(--font-size-4xl); margin-bottom: var(--spacing-md);">♿</div>
+            <h3 style="margin-bottom: var(--spacing-sm);">접근성</h3>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+              WCAG 2.1 AA 준수 및 스크린 리더 지원
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: var(--font-size-4xl); margin-bottom: var(--spacing-md);">✨</div>
+            <h3 style="margin-bottom: var(--spacing-sm);">애니메이션</h3>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+              부드러운 트랜지션과 인터랙티브 효과
+            </p>
+          </div>
+
+          <div class="card">
+            <div style="font-size: var(--font-size-4xl); margin-bottom: var(--spacing-md);">💾</div>
+            <h3 style="margin-bottom: var(--spacing-sm);">상태 관리</h3>
+            <p style="margin: 0; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+              LocalStorage 기반 데이터 영속성
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="background: var(--color-surface); padding: var(--spacing-2xl) var(--spacing-xl); text-align: center; border-top: 1px solid var(--color-border);">
+      <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-sm);">
+        모션 감지 앱 프로토타입 v1.0.0
+      </p>
+      <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+        React Native 구현을 위한 HTML/CSS/JavaScript 프로토타입
+      </p>
+    </footer>
+  </section>
+
+  <!-- Page: Dashboard -->
+  <section id="page-dashboard" class="page">
+    <main class="container" style="padding-top: var(--spacing-xl); padding-bottom: calc(var(--nav-height) + var(--spacing-xl));">
+      <header style="margin-bottom: var(--spacing-2xl); text-align: center;">
+        <h1>테스트 대시보드</h1>
+        <p style="color: var(--color-text-secondary); font-size: var(--font-size-lg);">
+          react-native-background-geolocation 라이브러리 테스트
+        </p>
+      </header>
+
+      <div class="test-tabs">
+        <button class="tab-btn active" data-tab="vehicle-exit">차량 하차 감지</button>
+        <button class="tab-btn" data-tab="motion">걷기/뛰기 감지</button>
+        <button class="tab-btn" data-tab="integrated">통합 시나리오</button>
+      </div>
+
+      <div id="tab-vehicle-exit" class="tab-content active">
+        <section class="card" style="margin-bottom: var(--spacing-xl);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+            <h2 style="margin: 0; font-size: var(--font-size-xl);">차량 하차 감지 테스트</h2>
+            <span id="vehicleBadge" class="badge badge-inactive badge-large" aria-live="polite">대기 중</span>
+          </div>
+
+          <div class="status-indicator">
+            <div id="vehicleIcon" class="status-icon inactive" role="img" aria-label="차량 상태">🚗</div>
+            <h2 id="vehicleText" class="status-text">차량 상태 모니터링 대기 중</h2>
+            <p id="vehicleSubtext" class="status-subtext">시작 버튼을 눌러 차량 하차 감지를 시작하세요</p>
+          </div>
+
+          <div style="margin-top: var(--spacing-2xl);">
+            <button id="vehicleBtn" class="btn btn-primary btn-large btn-block">차량 감지 시작</button>
+          </div>
+        </section>
+
+        <div class="alert alert-info">
+          <strong>💡 테스트 목적:</strong> 운전 완료 → 주차 → 하차 시나리오를 감지합니다.
+        </div>
+      </div>
+
+      <div id="tab-motion" class="tab-content">
+        <section class="card" style="margin-bottom: var(--spacing-xl);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+            <h2 style="margin: 0; font-size: var(--font-size-xl);">걷기/뛰기 감지 테스트</h2>
+            <span id="motionBadge" class="badge badge-inactive badge-large" aria-live="polite">비활성</span>
+          </div>
+
+          <div class="status-indicator">
+            <div id="motionIcon" class="status-icon inactive" role="img" aria-label="모션 상태">⏸️</div>
+            <h2 id="motionText" class="status-text">모션 감지 대기 중</h2>
+            <p id="motionSubtext" class="status-subtext">시작 버튼을 눌러 걷기/뛰기 감지를 시작하세요</p>
+          </div>
+
+          <div style="margin-top: var(--spacing-2xl);">
+            <button id="motionBtn" class="btn btn-success btn-large btn-block">모션 감지 시작</button>
+          </div>
+        </section>
+
+        <div class="alert alert-info">
+          <strong>💡 테스트 목적:</strong> 걷기와 뛰기 활동을 실시간으로 감지합니다.
+        </div>
+      </div>
+
+      <div id="tab-integrated" class="tab-content">
+        <section class="card" style="margin-bottom: var(--spacing-xl);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+            <h2 style="margin: 0; font-size: var(--font-size-xl);">통합 시나리오 테스트</h2>
+            <span id="integratedBadge" class="badge badge-inactive badge-large" aria-live="polite">대기 중</span>
+          </div>
+
+          <div class="status-indicator">
+            <div id="integratedIcon" class="status-icon inactive" role="img" aria-label="통합 상태">🔄</div>
+            <h2 id="integratedText" class="status-text">통합 시나리오 대기 중</h2>
+            <p id="integratedSubtext" class="status-subtext">차량 하차 후 자동으로 모션 감지가 시작됩니다</p>
+          </div>
+
+          <div style="margin-top: var(--spacing-2xl);">
+            <button id="integratedBtn" class="btn btn-primary btn-large btn-block">통합 테스트 시작</button>
+          </div>
+        </section>
+
+        <div class="alert alert-info">
+          <strong>💡 테스트 목적:</strong> 차량 하차 감지 → 걷기/뛰기 감지로 자동 전환되는 완전한 시나리오를 테스트합니다.
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- Page: Settings -->
+  <section id="page-settings" class="page">
+    <main class="container" style="padding-top: var(--spacing-xl); padding-bottom: calc(var(--nav-height) + var(--spacing-xl));">
+      <header style="margin-bottom: var(--spacing-2xl);">
+        <h1>설정</h1>
+        <p style="color: var(--color-text-secondary);">앱 동작과 외관을 설정합니다</p>
+      </header>
+
+      <form id="settingsForm">
+        <section class="card" style="margin-bottom: var(--spacing-xl);">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--spacing-lg);">감지 설정</h2>
+
+          <div class="form-group">
+            <label class="form-label" for="sensitivity">감지 민감도 (5단계)</label>
+            <select id="sensitivity" class="form-select" aria-describedby="sensitivityHelp">
+              <option value="very-low">1단계 - 매우 낮음 (강한 활동만 감지)</option>
+              <option value="low">2단계 - 낮음 (명확한 활동만 감지)</option>
+              <option value="medium" selected>3단계 - 중간 (일반적인 활동 감지, 권장)</option>
+              <option value="high">4단계 - 높음 (민감한 감지)</option>
+              <option value="very-high">5단계 - 매우 높음 (미세한 움직임도 감지)</option>
+            </select>
+            <span id="sensitivityHelp" class="form-help">
+              민감도가 높을수록 작은 움직임도 감지하지만 오탐지 가능성과 배터리 소모가 증가할 수 있습니다
+            </span>
+          </div>
+        </section>
+
+        <section class="card" style="margin-bottom: var(--spacing-xl);">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--spacing-lg);">알림</h2>
+
+          <div class="form-group">
+            <label class="form-label">알림 활성화</label>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                활동 감지 시 알림 표시
+              </span>
+              <label class="toggle">
+                <input type="checkbox" class="toggle-input" id="notifications" aria-label="알림 설정">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">사운드</label>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                알림 사운드 재생
+              </span>
+              <label class="toggle">
+                <input type="checkbox" class="toggle-input" id="soundEnabled" aria-label="사운드 설정">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" style="margin-bottom: var(--spacing-xl);">
+          <h2 style="font-size: var(--font-size-xl); margin-bottom: var(--spacing-lg);">데이터 관리</h2>
+
+          <div class="form-group">
+            <button type="button" id="clearLogsBtn" class="btn btn-outline btn-block" aria-label="로그 삭제">
+              모든 로그 삭제
+            </button>
+            <span class="form-help">
+              모든 테스트 로그를 삭제합니다. 이 작업은 되돌릴 수 없습니다.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <button type="button" id="resetBtn" class="btn btn-danger btn-block" aria-label="앱 초기화">
+              앱 초기화
+            </button>
+            <span class="form-help">
+              모든 설정과 데이터를 초기화합니다. 이 작업은 되돌릴 수 없습니다.
+            </span>
+          </div>
+        </section>
+
+        <div style="margin-bottom: var(--spacing-xl);">
+          <button type="submit" class="btn btn-primary btn-large btn-block">설정 저장</button>
+        </div>
+      </form>
+
+      <section class="card">
+        <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-md);">앱 정보</h3>
+        <div style="display: grid; gap: var(--spacing-sm); font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+          <div style="display: flex; justify-content: space-between;">
+            <span>버전</span>
+            <span style="font-weight: var(--font-weight-medium);">1.0.0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>빌드</span>
+            <span style="font-weight: var(--font-weight-medium);">Prototype</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>플랫폼</span>
+            <span style="font-weight: var(--font-weight-medium);">React Native (프로토타입)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <!-- Page: Logs -->
+  <section id="page-logs" class="page">
+    <main class="container" style="padding-top: var(--spacing-xl); padding-bottom: calc(var(--nav-height) + var(--spacing-xl));">
+      <div style="margin-bottom: var(--spacing-2xl);">
+        <h1>테스트 로그</h1>
+        <p style="color: var(--color-text-secondary); font-size: var(--font-size-lg);">
+          react-native-background-geolocation 라이브러리 테스트 로그
+        </p>
+      </div>
+
+      <div class="logs-header">
+        <div class="logs-controls">
+          <div class="form-group" style="margin-bottom: 0;">
+            <select id="logFilter" class="form-select" style="width: 200px;">
+              <option value="all">모든 로그</option>
+              <option value="vehicle">차량 이벤트</option>
+              <option value="motion">모션 감지</option>
+              <option value="system">시스템</option>
+            </select>
+          </div>
+          <button id="clearLogsPageBtn" class="btn btn-danger">모든 로그 삭제</button>
+        </div>
+      </div>
+
+      <div class="logs-stats">
+        <div>
+          <span>총 로그:</span>
+          <span id="totalLogs">0</span>
+        </div>
+        <div>
+          <span>차량 이벤트:</span>
+          <span id="vehicleLogs">0</span>
+        </div>
+        <div>
+          <span>모션 감지:</span>
+          <span id="motionLogs">0</span>
+        </div>
+        <div>
+          <span>시스템:</span>
+          <span id="systemLogs">0</span>
+        </div>
+      </div>
+
+      <div class="logs-container" id="logsContainer"></div>
+
+      <div id="emptyState" class="card" style="display: none; text-align: center; padding: var(--spacing-2xl);">
+        <p style="color: var(--color-text-secondary); font-size: var(--font-size-lg);">
+          아직 로그가 없습니다
+        </p>
+        <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-md);">
+          대시보드에서 감지를 시작하면 로그가 여기에 표시됩니다
+        </p>
+      </div>
+    </main>
+  </section>
+
+  <!-- Page: Permissions -->
+  <section id="page-permissions" class="page">
+    <div class="permission-container">
+      <div class="permission-content">
+        <div style="text-align: center; margin-bottom: var(--spacing-2xl);">
+          <div style="font-size: 6rem; margin-bottom: var(--spacing-lg);" role="img" aria-label="권한 설정">🔐</div>
+          <h1 style="margin-bottom: var(--spacing-md);">권한 설정</h1>
+          <p style="font-size: var(--font-size-lg); color: var(--color-text-secondary);">
+            앱이 정상적으로 작동하려면<br>
+            다음 권한을 허용해주세요
+          </p>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--spacing-lg);">
+          <div style="display: flex; align-items: start; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+            <div style="font-size: var(--font-size-4xl); flex-shrink: 0;">📍</div>
+            <div style="flex: 1;">
+              <h3 style="font-size: var(--font-size-xl); margin-bottom: var(--spacing-sm);">위치 권한</h3>
+              <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--spacing-md);">
+                차량 이동과 하차를 감지하기 위해 필요합니다. 백그라운드에서도 위치 정보에 접근합니다.
+              </p>
+              <button id="requestLocation" class="btn btn-primary btn-block" aria-label="위치 권한 허용">
+                위치 권한 허용
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--spacing-lg);">
+          <div style="display: flex; align-items: start; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+            <div style="font-size: var(--font-size-4xl); flex-shrink: 0;">🏃</div>
+            <div style="flex: 1;">
+              <h3 style="font-size: var(--font-size-xl); margin-bottom: var(--spacing-sm);">활동 인식 권한</h3>
+              <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--spacing-md);">
+                걷기와 뛰기 활동을 정확하게 감지하기 위해 필요합니다.
+              </p>
+              <button id="requestActivity" class="btn btn-primary btn-block" aria-label="활동 인식 권한 허용">
+                활동 인식 권한 허용
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: var(--spacing-2xl);">
+          <div style="display: flex; align-items: start; gap: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+            <div style="font-size: var(--font-size-4xl); flex-shrink: 0;">🔔</div>
+            <div style="flex: 1;">
+              <h3 style="font-size: var(--font-size-xl); margin-bottom: var(--spacing-sm);">
+                알림 권한
+                <span class="badge badge-inactive" style="font-size: var(--font-size-xs);">선택사항</span>
+              </h3>
+              <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--spacing-md);">
+                활동 감지 시 알림을 받으려면 허용해주세요.
+              </p>
+              <button id="requestNotifications" class="btn btn-outline btn-block" aria-label="알림 권한 허용">
+                알림 권한 허용
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-success" style="margin-bottom: var(--spacing-xl);">
+          <div style="display: flex; gap: var(--spacing-md);">
+            <div style="font-size: var(--font-size-2xl); flex-shrink: 0;">🔒</div>
+            <div>
+              <h4 style="font-size: var(--font-size-base); font-weight: var(--font-weight-semibold); margin-bottom: var(--spacing-xs);">
+                개인정보 보호
+              </h4>
+              <p style="font-size: var(--font-size-sm); margin: 0;">
+                수집된 모든 데이터는 기기에만 저장되며, 외부 서버로 전송되지 않습니다.
+                언제든지 설정에서 권한을 변경하거나 데이터를 삭제할 수 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <button id="continueBtn" class="btn btn-success btn-large btn-block" disabled aria-label="계속하기">
+          계속하기
+        </button>
+
+        <div style="text-align: center; margin-top: var(--spacing-lg);">
+          <a data-page="dashboard" style="font-size: var(--font-size-sm); color: var(--color-text-secondary); cursor: pointer;">
+            나중에 설정하기
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Navigation (Mobile) -->
+  <nav class="bottom-nav" id="bottomNav" style="display: none;">
+    <a data-page="dashboard" class="bottom-nav-item">
+      <span class="bottom-nav-icon">📊</span>
+      <span>대시보드</span>
+    </a>
+    <a data-page="logs" class="bottom-nav-item">
+      <span class="bottom-nav-icon">📋</span>
+      <span>로그</span>
+    </a>
+    <a data-page="settings" class="bottom-nav-item">
+      <span class="bottom-nav-icon">⚙️</span>
+      <span>설정</span>
+    </a>
+  </nav>
+
+  <script>
+    /**
+     * State Management
+     * Centralized application state with reactive updates
+     */
+    class AppState {
+      constructor() {
+        this.state = {
+          detectionMode: 'vehicle-exit',
+          detectionActive: false,
+          currentActivity: null,
+          vehicleState: null,
+          permissions: {
+            location: false,
+            activity: false,
+            notifications: false
+          },
+          settings: {
+            sensitivity: 'medium',
+            notifications: true,
+            soundEnabled: true
+          },
+          logs: []
+        };
+
+        this.listeners = new Map();
+        this.simulationInterval = null;
+        this.loadState();
+      }
+
+      loadState() {
+        try {
+          const savedSettings = localStorage.getItem('settings');
+          if (savedSettings) {
+            this.state.settings = { ...this.state.settings, ...JSON.parse(savedSettings) };
+          }
+
+          const savedLogs = localStorage.getItem('logs');
+          if (savedLogs) {
+            this.state.logs = JSON.parse(savedLogs);
+          }
+        } catch (error) {
+          console.error('Failed to load state:', error);
+        }
+      }
+
+      saveState() {
+        try {
+          localStorage.setItem('settings', JSON.stringify(this.state.settings));
+          localStorage.setItem('logs', JSON.stringify(this.state.logs));
+        } catch (error) {
+          console.error('Failed to save state:', error);
+        }
+      }
+
+      subscribe(key, callback) {
+        if (!this.listeners.has(key)) {
+          this.listeners.set(key, []);
+        }
+        this.listeners.get(key).push(callback);
+
+        return () => {
+          const callbacks = this.listeners.get(key);
+          const index = callbacks.indexOf(callback);
+          if (index > -1) {
+            callbacks.splice(index, 1);
+          }
+        };
+      }
+
+      notify(key) {
+        if (this.listeners.has(key)) {
+          this.listeners.get(key).forEach(callback => {
+            try {
+              callback(this.state[key]);
+            } catch (error) {
+              console.error('Listener error:', error);
+            }
+          });
+        }
+
+        if (this.listeners.has('all')) {
+          this.listeners.get('all').forEach(callback => {
+            try {
+              callback(this.state);
+            } catch (error) {
+              console.error('Listener error:', error);
+            }
+          });
+        }
+      }
+
+      setState(key, value) {
+        const oldValue = this.state[key];
+        this.state[key] = value;
+
+        if (oldValue !== value) {
+          this.notify(key);
+          this.saveState();
+        }
+      }
+
+      getState(key) {
+        return key ? this.state[key] : this.state;
+      }
+
+      startDetection() {
+        if (this.state.detectionActive) return;
+
+        this.setState('detectionActive', true);
+        this.addLog('Detection started', 'info');
+        this.startSimulation();
+      }
+
+      stopDetection() {
+        if (!this.state.detectionActive) return;
+
+        this.setState('detectionActive', false);
+        this.setState('currentActivity', null);
+        this.addLog('Detection stopped', 'info');
+        this.stopSimulation();
+      }
+
+      toggleDetection() {
+        if (this.state.detectionActive) {
+          this.stopDetection();
+        } else {
+          this.startDetection();
+        }
+      }
+
+      startSimulation() {
+        this.stopSimulation();
+
+        let lastActivity = null;
+
+        this.simulationInterval = setInterval(() => {
+          if (!this.state.detectionActive) {
+            this.stopSimulation();
+            return;
+          }
+
+          const random = Math.random();
+          let activity = null;
+
+          if (random < 0.4) {
+            activity = 'walking';
+          } else if (random < 0.7) {
+            activity = 'running';
+          }
+
+          if (activity !== lastActivity) {
+            this.setActivity(activity);
+            lastActivity = activity;
+          }
+        }, 3000);
+      }
+
+      stopSimulation() {
+        if (this.simulationInterval) {
+          clearInterval(this.simulationInterval);
+          this.simulationInterval = null;
+        }
+      }
+
+      setActivity(activity) {
+        const oldActivity = this.state.currentActivity;
+        this.setState('currentActivity', activity);
+
+        if (activity && activity !== oldActivity) {
+          const displayName = activity === 'walking' ? '걷기' : '뛰기';
+          this.addLog(`${displayName} 감지됨`, activity);
+        }
+      }
+
+      addLog(message, type) {
+        const log = {
+          id: Date.now(),
+          message,
+          type,
+          timestamp: new Date().toISOString()
+        };
+
+        this.state.logs.unshift(log);
+
+        if (this.state.logs.length > 50) {
+          this.state.logs = this.state.logs.slice(0, 50);
+        }
+
+        this.notify('logs');
+        this.saveState();
+      }
+
+      updateSettings(updates) {
+        this.state.settings = { ...this.state.settings, ...updates };
+        this.notify('settings');
+        this.saveState();
+      }
+
+      async requestPermission(type) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            this.state.permissions[type] = true;
+            this.notify('permissions');
+            resolve(true);
+          }, 500);
+        });
+      }
+
+      clearLogs() {
+        this.state.logs = [];
+        this.notify('logs');
+        this.saveState();
+      }
+
+      reset() {
+        this.stopDetection();
+        localStorage.clear();
+        location.reload();
+      }
+    }
+
+    // Create global instance
+    window.appState = new AppState();
+
+    /**
+     * SPA Router
+     */
+    class Router {
+      constructor() {
+        this.currentPage = 'home';
+        this.init();
+      }
+
+      init() {
+        // Handle navigation clicks
+        document.addEventListener('click', (e) => {
+          const target = e.target.closest('[data-page]');
+          if (target) {
+            e.preventDefault();
+            const page = target.getAttribute('data-page');
+            this.navigateTo(page);
+          }
+        });
+
+        // Handle browser back/forward
+        window.addEventListener('hashchange', () => {
+          const page = window.location.hash.slice(1) || 'home';
+          this.showPage(page);
+        });
+
+        // Initial page from hash
+        const initialPage = window.location.hash.slice(1) || 'home';
+        this.showPage(initialPage);
+      }
+
+      navigateTo(page) {
+        window.location.hash = page;
+      }
+
+      showPage(page) {
+        // Hide all pages
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+        // Show target page
+        const targetPage = document.getElementById(`page-${page}`);
+        if (targetPage) {
+          targetPage.classList.add('active');
+          this.currentPage = page;
+
+          // Show/hide navigation
+          const topNav = document.getElementById('topNav');
+          const bottomNav = document.getElementById('bottomNav');
+
+          if (page === 'home') {
+            topNav.style.display = 'none';
+            bottomNav.style.display = 'none';
+          } else {
+            topNav.style.display = 'flex';
+            bottomNav.style.display = 'flex';
+          }
+
+          // Update active nav items
+          this.updateActiveNav(page);
+
+          // Trigger page-specific init
+          if (page === 'logs') {
+            window.logsController && window.logsController.renderLogs();
+          }
+        }
+      }
+
+      updateActiveNav(page) {
+        // Update top nav
+        document.querySelectorAll('.nav-item a').forEach(item => {
+          const itemPage = item.getAttribute('data-page');
+          if (itemPage === page) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+
+        // Update bottom nav
+        document.querySelectorAll('.bottom-nav-item').forEach(item => {
+          const itemPage = item.getAttribute('data-page');
+          if (itemPage === page) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    /**
+     * Dashboard Controller
+     */
+    class DashboardController {
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        this.setupTabSwitching();
+        this.setupVehicleExitMode();
+        this.setupMotionMode();
+        this.setupIntegratedMode();
+      }
+
+      setupTabSwitching() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            tabContents.forEach(content => content.classList.remove('active'));
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            if (targetTab) {
+              targetTab.classList.add('active');
+            }
+
+            window.appState.setState('detectionMode', tabName);
+          });
+        });
+      }
+
+      setupVehicleExitMode() {
+        const vehicleBtn = document.getElementById('vehicleBtn');
+        const vehicleBadge = document.getElementById('vehicleBadge');
+        const vehicleIcon = document.getElementById('vehicleIcon');
+        const vehicleText = document.getElementById('vehicleText');
+        const vehicleSubtext = document.getElementById('vehicleSubtext');
+
+        if (!vehicleBtn) return;
+
+        vehicleBtn.addEventListener('click', () => {
+          const isActive = window.appState.getState('detectionActive');
+          if (isActive) {
+            window.appState.stopDetection();
+            window.appState.addLog('차량 감지 중지', 'system');
+          } else {
+            window.appState.startDetection();
+            window.appState.addLog('차량 감지 시작', 'vehicle');
+          }
+        });
+
+        window.appState.subscribe('detectionActive', (isActive) => {
+          if (vehicleBtn) {
+            vehicleBtn.textContent = isActive ? '차량 감지 중지' : '차량 감지 시작';
+            vehicleBtn.className = isActive ? 'btn btn-danger btn-large btn-block' : 'btn btn-primary btn-large btn-block';
+          }
+
+          if (vehicleBadge) {
+            vehicleBadge.textContent = isActive ? '감지 중' : '대기 중';
+            vehicleBadge.className = isActive ? 'badge badge-success badge-large' : 'badge badge-inactive badge-large';
+          }
+        });
+
+        window.appState.subscribe('vehicleState', (state) => {
+          if (!vehicleIcon || !vehicleText || !vehicleSubtext) return;
+
+          if (state === 'driving') {
+            vehicleIcon.textContent = '🚗';
+            vehicleIcon.className = 'status-icon walking';
+            vehicleText.textContent = '운전 중 감지됨';
+            vehicleSubtext.textContent = '차량이 이동 중입니다';
+            window.appState.addLog('운전 중 감지', 'vehicle');
+          } else if (state === 'parked') {
+            vehicleIcon.textContent = '🅿️';
+            vehicleIcon.className = 'status-icon running';
+            vehicleText.textContent = '주차됨';
+            vehicleSubtext.textContent = '차량이 정지했습니다';
+            window.appState.addLog('차량 주차 감지', 'vehicle');
+          } else if (state === 'exited') {
+            vehicleIcon.textContent = '🚶';
+            vehicleIcon.className = 'status-icon walking';
+            vehicleText.textContent = '하차 감지됨';
+            vehicleSubtext.textContent = '차량에서 하차했습니다';
+            window.appState.addLog('차량 하차 감지', 'vehicle');
+          }
+        });
+      }
+
+      setupMotionMode() {
+        const motionBtn = document.getElementById('motionBtn');
+        const motionBadge = document.getElementById('motionBadge');
+        const motionIcon = document.getElementById('motionIcon');
+        const motionText = document.getElementById('motionText');
+        const motionSubtext = document.getElementById('motionSubtext');
+
+        if (!motionBtn) return;
+
+        motionBtn.addEventListener('click', () => {
+          const isActive = window.appState.getState('detectionActive');
+          if (isActive) {
+            window.appState.stopDetection();
+            window.appState.addLog('모션 감지 중지', 'system');
+          } else {
+            window.appState.startDetection();
+            window.appState.addLog('모션 감지 시작', 'system');
+          }
+        });
+
+        window.appState.subscribe('detectionActive', (isActive) => {
+          if (motionBtn) {
+            motionBtn.textContent = isActive ? '모션 감지 중지' : '모션 감지 시작';
+            motionBtn.className = isActive ? 'btn btn-danger btn-large btn-block' : 'btn btn-success btn-large btn-block';
+          }
+
+          if (motionBadge) {
+            motionBadge.textContent = isActive ? '활성' : '비활성';
+            motionBadge.className = isActive ? 'badge badge-success badge-large' : 'badge badge-inactive badge-large';
+          }
+        });
+
+        window.appState.subscribe('currentActivity', (activity) => {
+          if (!motionIcon || !motionText || !motionSubtext) return;
+
+          if (activity === 'walking') {
+            motionIcon.className = 'status-icon walking animate-fadeIn';
+            motionIcon.textContent = '🚶';
+            motionText.textContent = '걷기 감지됨';
+            motionSubtext.textContent = '현재 걷기 활동이 감지되고 있습니다';
+          } else if (activity === 'running') {
+            motionIcon.className = 'status-icon running animate-fadeIn';
+            motionIcon.textContent = '🏃';
+            motionText.textContent = '뛰기 감지됨';
+            motionSubtext.textContent = '현재 뛰기 활동이 감지되고 있습니다';
+          } else if (window.appState.getState('detectionActive')) {
+            motionIcon.className = 'status-icon inactive';
+            motionIcon.textContent = '👁️';
+            motionText.textContent = '활동 감지 중...';
+            motionSubtext.textContent = '움직임을 감지하고 있습니다';
+          } else {
+            motionIcon.className = 'status-icon inactive';
+            motionIcon.textContent = '⏸️';
+            motionText.textContent = '모션 감지 대기 중';
+            motionSubtext.textContent = '시작 버튼을 눌러 걷기/뛰기 감지를 시작하세요';
+          }
+        });
+      }
+
+      setupIntegratedMode() {
+        const integratedBtn = document.getElementById('integratedBtn');
+        const integratedBadge = document.getElementById('integratedBadge');
+        const integratedIcon = document.getElementById('integratedIcon');
+        const integratedText = document.getElementById('integratedText');
+        const integratedSubtext = document.getElementById('integratedSubtext');
+
+        if (!integratedBtn) return;
+
+        integratedBtn.addEventListener('click', () => {
+          const isActive = window.appState.getState('detectionActive');
+          if (isActive) {
+            window.appState.stopDetection();
+            window.appState.addLog('통합 시나리오 중지', 'system');
+          } else {
+            window.appState.startDetection();
+            window.appState.addLog('통합 시나리오 시작 - 차량 하차 감지 → 모션 감지', 'system');
+          }
+        });
+
+        window.appState.subscribe('detectionActive', (isActive) => {
+          if (integratedBtn) {
+            integratedBtn.textContent = isActive ? '통합 테스트 중지' : '통합 테스트 시작';
+            integratedBtn.className = isActive ? 'btn btn-danger btn-large btn-block' : 'btn btn-primary btn-large btn-block';
+          }
+
+          if (integratedBadge) {
+            integratedBadge.textContent = isActive ? '실행 중' : '대기 중';
+            integratedBadge.className = isActive ? 'badge badge-success badge-large' : 'badge badge-inactive badge-large';
+          }
+        });
+
+        window.appState.subscribe('vehicleState', (state) => {
+          if (!integratedIcon || !integratedText || !integratedSubtext) return;
+
+          if (state === 'exited') {
+            integratedIcon.textContent = '🚗➡️🚶';
+            integratedIcon.className = 'status-icon walking';
+            integratedText.textContent = '하차 완료 - 모션 감지 전환';
+            integratedSubtext.textContent = '차량 하차 감지, 곧 모션 감지로 전환됩니다';
+          }
+        });
+
+        window.appState.subscribe('currentActivity', (activity) => {
+          if (!integratedIcon || !integratedText || !integratedSubtext) return;
+
+          if (activity === 'walking') {
+            integratedIcon.className = 'status-icon walking animate-fadeIn';
+            integratedIcon.textContent = '🚶';
+            integratedText.textContent = '걷기 감지됨';
+            integratedSubtext.textContent = '하차 후 걷기 활동 감지 중';
+          } else if (activity === 'running') {
+            integratedIcon.className = 'status-icon running animate-fadeIn';
+            integratedIcon.textContent = '🏃';
+            integratedText.textContent = '뛰기 감지됨';
+            integratedSubtext.textContent = '하차 후 뛰기 활동 감지 중';
+          }
+        });
+      }
+    }
+
+    /**
+     * Settings Controller
+     */
+    class SettingsController {
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        const form = document.getElementById('settingsForm');
+        if (!form) return;
+
+        const settings = window.appState.getState('settings');
+
+        const sensitivitySelect = document.getElementById('sensitivity');
+        const notificationsToggle = document.getElementById('notifications');
+        const soundToggle = document.getElementById('soundEnabled');
+
+        if (sensitivitySelect) sensitivitySelect.value = settings.sensitivity;
+        if (notificationsToggle) notificationsToggle.checked = settings.notifications;
+        if (soundToggle) soundToggle.checked = settings.soundEnabled;
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const updates = {
+            sensitivity: sensitivitySelect?.value || settings.sensitivity,
+            notifications: notificationsToggle?.checked ?? settings.notifications,
+            soundEnabled: soundToggle?.checked ?? settings.soundEnabled
+          };
+
+          window.appState.updateSettings(updates);
+          this.showToast('설정이 저장되었습니다', 'success');
+        });
+
+        const resetBtn = document.getElementById('resetBtn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            if (confirm('모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+              window.appState.reset();
+            }
+          });
+        }
+
+        const clearLogsBtn = document.getElementById('clearLogsBtn');
+        if (clearLogsBtn) {
+          clearLogsBtn.addEventListener('click', () => {
+            if (confirm('로그를 모두 삭제하시겠습니까?')) {
+              window.appState.clearLogs();
+              this.showToast('로그가 삭제되었습니다', 'success');
+            }
+          });
+        }
+      }
+
+      showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type}`;
+        toast.textContent = message;
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.right = '20px';
+        toast.style.zIndex = '1000';
+        toast.style.minWidth = '300px';
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('animate-fadeOut');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
+    }
+
+    /**
+     * Logs Controller
+     */
+    class LogsController {
+      constructor() {
+        this.logsContainer = document.getElementById('logsContainer');
+        this.emptyState = document.getElementById('emptyState');
+        this.logFilter = document.getElementById('logFilter');
+        this.clearLogsPageBtn = document.getElementById('clearLogsPageBtn');
+
+        this.totalLogsEl = document.getElementById('totalLogs');
+        this.vehicleLogsEl = document.getElementById('vehicleLogs');
+        this.motionLogsEl = document.getElementById('motionLogs');
+        this.systemLogsEl = document.getElementById('systemLogs');
+
+        this.init();
+      }
+
+      init() {
+        if (this.clearLogsPageBtn) {
+          this.clearLogsPageBtn.addEventListener('click', () => {
+            if (confirm('모든 로그를 삭제하시겠습니까?')) {
+              window.appState.clearLogs();
+            }
+          });
+        }
+
+        if (this.logFilter) {
+          this.logFilter.addEventListener('change', () => this.renderLogs());
+        }
+
+        window.appState.subscribe('logs', () => this.renderLogs());
+      }
+
+      formatTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('ko-KR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      }
+
+      getBadgeClass(type) {
+        const badges = {
+          'vehicle': 'badge-primary',
+          'walking': 'badge-success',
+          'running': 'badge-warning',
+          'motion': 'badge-success',
+          'info': 'badge-inactive',
+          'system': 'badge-inactive'
+        };
+        return badges[type] || 'badge-inactive';
+      }
+
+      getTypeName(type) {
+        const names = {
+          'vehicle': '차량',
+          'walking': '걷기',
+          'running': '뛰기',
+          'motion': '모션',
+          'info': '정보',
+          'system': '시스템'
+        };
+        return names[type] || type;
+      }
+
+      getLogCategory(type) {
+        if (type === 'vehicle') return 'vehicle';
+        if (type === 'walking' || type === 'running' || type === 'motion') return 'motion';
+        return 'system';
+      }
+
+      updateStatistics(logs) {
+        const stats = logs.reduce((acc, log) => {
+          const category = this.getLogCategory(log.type);
+          acc[category] = (acc[category] || 0) + 1;
+          return acc;
+        }, {});
+
+        if (this.totalLogsEl) this.totalLogsEl.textContent = logs.length;
+        if (this.vehicleLogsEl) this.vehicleLogsEl.textContent = stats.vehicle || 0;
+        if (this.motionLogsEl) this.motionLogsEl.textContent = stats.motion || 0;
+        if (this.systemLogsEl) this.systemLogsEl.textContent = stats.system || 0;
+      }
+
+      renderLogs() {
+        if (!this.logsContainer) return;
+
+        const logs = window.appState.getState('logs') || [];
+        const filter = this.logFilter?.value || 'all';
+
+        const filteredLogs = filter === 'all'
+          ? logs
+          : logs.filter(log => this.getLogCategory(log.type) === filter);
+
+        this.updateStatistics(logs);
+
+        if (filteredLogs.length === 0) {
+          if (this.logsContainer) this.logsContainer.style.display = 'none';
+          if (this.emptyState) this.emptyState.style.display = 'block';
+          return;
+        }
+
+        if (this.logsContainer) this.logsContainer.style.display = 'block';
+        if (this.emptyState) this.emptyState.style.display = 'none';
+
+        this.logsContainer.innerHTML = filteredLogs.map(log => `
+          <div class="log-entry" data-type="${this.getLogCategory(log.type)}">
+            <span class="log-time">${this.formatTime(log.timestamp)}</span>
+            <span class="badge ${this.getBadgeClass(log.type)} log-type">${this.getTypeName(log.type)}</span>
+            <span class="log-message">${log.message}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    /**
+     * Permissions Controller
+     */
+    class PermissionsController {
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        const requestLocationBtn = document.getElementById('requestLocation');
+        const requestActivityBtn = document.getElementById('requestActivity');
+        const requestNotificationsBtn = document.getElementById('requestNotifications');
+        const continueBtn = document.getElementById('continueBtn');
+
+        const updatePermissionStatus = () => {
+          const permissions = window.appState.getState('permissions');
+          const allGranted = permissions.location && permissions.activity;
+
+          if (continueBtn) {
+            continueBtn.disabled = !allGranted;
+          }
+        };
+
+        if (requestLocationBtn) {
+          requestLocationBtn.addEventListener('click', async () => {
+            requestLocationBtn.disabled = true;
+            requestLocationBtn.textContent = '요청 중...';
+
+            await window.appState.requestPermission('location');
+
+            requestLocationBtn.textContent = '✓ 허용됨';
+            requestLocationBtn.classList.add('btn-success');
+            updatePermissionStatus();
+          });
+        }
+
+        if (requestActivityBtn) {
+          requestActivityBtn.addEventListener('click', async () => {
+            requestActivityBtn.disabled = true;
+            requestActivityBtn.textContent = '요청 중...';
+
+            await window.appState.requestPermission('activity');
+
+            requestActivityBtn.textContent = '✓ 허용됨';
+            requestActivityBtn.classList.add('btn-success');
+            updatePermissionStatus();
+          });
+        }
+
+        if (requestNotificationsBtn) {
+          requestNotificationsBtn.addEventListener('click', async () => {
+            requestNotificationsBtn.disabled = true;
+            requestNotificationsBtn.textContent = '요청 중...';
+
+            await window.appState.requestPermission('notifications');
+
+            requestNotificationsBtn.textContent = '✓ 허용됨';
+            requestNotificationsBtn.classList.add('btn-success');
+          });
+        }
+
+        if (continueBtn) {
+          continueBtn.addEventListener('click', () => {
+            window.location.hash = 'dashboard';
+          });
+        }
+
+        updatePermissionStatus();
+      }
+    }
+
+    // Initialize application
+    window.router = new Router();
+    window.dashboardController = new DashboardController();
+    window.settingsController = new SettingsController();
+    window.logsController = new LogsController();
+    window.permissionsController = new PermissionsController();
+  </script>
+</body>
+</html>
