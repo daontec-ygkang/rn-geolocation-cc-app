@@ -10,9 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.21.0",
+    "@react-native/new-app-screen": "0.81.4",
     "react": "19.1.0",
     "react-native": "0.81.4",
-    "@react-native/new-app-screen": "0.81.4",
+    "react-native-background-fetch": "^4.2.8",
+    "react-native-background-geolocation": "^4.16.2",
     "react-native-safe-area-context": "^5.5.2"
   },
   "devDependencies": {
@@ -26,14 +29,17 @@
     "@react-native/eslint-config": "0.81.4",
     "@react-native/metro-config": "0.81.4",
     "@react-native/typescript-config": "0.81.4",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^12.4.3",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.1.0",
     "@types/react-test-renderer": "^19.1.0",
+    "babel-plugin-module-resolver": "^5.0.0",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "19.1.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=20"
