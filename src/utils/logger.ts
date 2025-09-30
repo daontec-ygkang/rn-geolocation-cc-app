@@ -1,4 +1,5 @@
 // Logger utility for debugging and development
+/* eslint-disable no-console */
 
 export const logger = {
   log: (message: string, ...args: unknown[]) => {

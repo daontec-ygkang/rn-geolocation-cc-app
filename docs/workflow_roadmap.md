@@ -226,22 +226,22 @@ Tests: Structure verification"
 
 #### 0.5. 빌드 검증
 
-- [ ] Android 빌드 테스트
+- [x] Android 빌드 테스트
 ```bash
 npm run android
 ```
 
-- [ ] iOS 빌드 테스트
+- [x] iOS 빌드 테스트
 ```bash
 npm run ios
 ```
 
-- [ ] TypeScript 컴파일 테스트
+- [x] TypeScript 컴파일 테스트
 ```bash
 npx tsc --noEmit
 ```
 
-- [ ] Lint 검증
+- [x] Lint 검증
 ```bash
 npm run lint
 ```
