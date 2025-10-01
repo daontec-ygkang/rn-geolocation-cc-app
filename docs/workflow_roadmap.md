@@ -1429,17 +1429,17 @@ Tests:
 - ✅ User interactions"
 ```
 
-#### 2.2. Permissions 화면 구현
+#### ✅ 2.2. Permissions 화면 구현
 
 **세부 계획**
-- [ ] 권한 카드 컴포넌트 (Location, Activity Recognition, Notifications)
-- [ ] 권한 요청 로직
-- [ ] 권한 상태 표시
+- [x] 권한 카드 컴포넌트 (Location, Activity Recognition, Notifications)
+- [x] 권한 요청 로직
+- [x] 권한 상태 표시
 
 **TDD 사이클: PermissionCard 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Permissions/__tests__/PermissionCard.test.tsx`
+- [x] `src/screens/Permissions/__tests__/PermissionCard.test.tsx`
 
 ```typescript
 describe('PermissionCard Component', () => {
@@ -1479,7 +1479,7 @@ describe('PermissionCard Component', () => {
 ```
 
 **구현**
-- [ ] `src/screens/Permissions/components/PermissionCard.tsx`
+- [x] `src/screens/Permissions/components/PermissionCard.tsx`
 
 ```typescript
 import React from 'react';
@@ -1536,7 +1536,7 @@ export const PermissionCard: React.FC<PermissionCardProps> = ({
 };
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/Permissions/components/PermissionCard.tsx src/screens/Permissions/__tests__/PermissionCard.test.tsx
@@ -1556,7 +1556,7 @@ Tests:
 **메인 Permissions 화면 통합**
 
 **테스트 작성**
-- [ ] `src/screens/__tests__/PermissionsScreen.test.tsx`
+- [x] `src/screens/__tests__/PermissionsScreen.test.tsx`
 
 ```typescript
 describe('PermissionsScreen', () => {
@@ -1585,7 +1585,7 @@ describe('PermissionsScreen', () => {
 ```
 
 **구현**
-- [ ] `src/screens/PermissionsScreen.tsx`
+- [x] `src/screens/PermissionsScreen.tsx`
 
 ```typescript
 import React from 'react';
@@ -1668,7 +1668,7 @@ export const PermissionsScreen = ({ navigation }) => {
 };
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/PermissionsScreen.tsx src/screens/__tests__/PermissionsScreen.test.tsx
@@ -1689,9 +1689,9 @@ Tests:
 
 #### 2.3. 네비게이션 연동
 
-- [ ] RootNavigator에 실제 스크린 연결
-- [ ] MainNavigator 탭 구성 업데이트
-- [ ] 네비게이션 플로우 테스트
+- [x] RootNavigator에 실제 스크린 연결
+- [x] MainNavigator 탭 구성 업데이트
+- [x] 네비게이션 플로우 테스트
 
 ```bash
 git add src/navigation/

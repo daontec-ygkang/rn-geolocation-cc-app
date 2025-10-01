@@ -20,3 +20,5 @@ export type {TextProps} from './Text';
 export {ActivityStatus} from './ActivityStatus';
 export {ControlButtons} from './ControlButtons';
 export {StatisticsCard} from './StatisticsCard';
+export {PermissionCard} from './PermissionCard';
+export type {PermissionCardProps} from './PermissionCard';
