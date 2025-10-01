@@ -2108,8 +2108,8 @@ Tests:
 #### 3.3. Android 네이티브 설정
 
 **구현**
-- [ ] AndroidManifest.xml 권한 추가
-- [ ] Foreground Service 설정
+- [x] AndroidManifest.xml 권한 추가
+- [x] Foreground Service 설정
 
 ```xml
 <!-- android/app/src/main/AndroidManifest.xml -->
