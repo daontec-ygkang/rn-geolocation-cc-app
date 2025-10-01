@@ -26,7 +26,7 @@ const TABS = [
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
   const {theme} = useTheme();
-  const {state, updateState} = useApp();
+  const {state, updateState, addLog} = useApp();
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const activityStartTime = useRef<number | null>(null);
@@ -94,33 +94,26 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
       const previousActivity = state.currentActivity;
       updateState('currentActivity', activity);
 
-      // Update statistics when activity changes
+      // Handle activity changes with logging
       if (activity !== 'inactive' && activity !== previousActivity) {
         // Record start time for new activity
         activityStartTime.current = Date.now();
       } else if (activity === 'inactive' && activityStartTime.current) {
         // Calculate duration when activity ends
         const duration = Math.floor((Date.now() - activityStartTime.current) / 1000);
-        const stats = state.statistics;
 
-        if (previousActivity === 'walking') {
-          updateState('statistics', {
-            ...stats,
-            walkingTime: stats.walkingTime + duration,
-            totalTime: stats.totalTime + duration,
-          });
-        } else if (previousActivity === 'running') {
-          updateState('statistics', {
-            ...stats,
-            runningTime: stats.runningTime + duration,
-            totalTime: stats.totalTime + duration,
-          });
+        // Add log entry and update statistics
+        if (previousActivity === 'walking' || previousActivity === 'running') {
+          addLog(previousActivity, duration);
+          console.log(
+            `[DashboardScreen] Log added: ${previousActivity} for ${duration}s`,
+          );
         }
 
         activityStartTime.current = null;
       }
     },
-    [state.currentActivity, state.statistics, updateState],
+    [state.currentActivity, updateState, addLog],
   );
 
   const handleStartStop = useCallback(async () => {
@@ -135,33 +128,27 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
       if (state.isDetecting) {
         // Stop detection
         await GeolocationService.stop();
-        updateState('isDetecting', false);
-        updateState('currentActivity', 'inactive');
-        updateState('vehicleState', null);
 
-        // Save final activity duration
+        // Save final activity duration and log
         if (activityStartTime.current) {
-          const duration = Math.floor((Date.now() - activityStartTime.current) / 1000);
-          const stats = state.statistics;
+          const duration = Math.floor(
+            (Date.now() - activityStartTime.current) / 1000,
+          );
           const currentActivity = state.currentActivity;
 
-          if (currentActivity === 'walking') {
-            updateState('statistics', {
-              ...stats,
-              walkingTime: stats.walkingTime + duration,
-              totalTime: stats.totalTime + duration,
-            });
-          } else if (currentActivity === 'running') {
-            updateState('statistics', {
-              ...stats,
-              runningTime: stats.runningTime + duration,
-              totalTime: stats.totalTime + duration,
-            });
+          if (currentActivity === 'walking' || currentActivity === 'running') {
+            addLog(currentActivity, duration);
+            console.log(
+              `[DashboardScreen] Final log added: ${currentActivity} for ${duration}s`,
+            );
           }
 
           activityStartTime.current = null;
         }
 
+        updateState('isDetecting', false);
+        updateState('currentActivity', 'inactive');
+        updateState('vehicleState', null);
         console.log('[DashboardScreen] Detection stopped');
       } else {
         // Start detection
@@ -182,8 +169,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
     isInitialized,
     state.isDetecting,
     state.currentActivity,
-    state.statistics,
     updateState,
+    addLog,
     handleActivityChange,
   ]);
 

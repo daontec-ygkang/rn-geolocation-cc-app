@@ -2181,8 +2181,8 @@ Tests: iOS build verification"
 #### 3.5. 로그 기능 구현
 
 **구현**
-- [ ] 활동 감지 시 로그 생성
-- [ ] AppContext에 로그 추가 메서드 구현
+- [x] 활동 감지 시 로그 생성
+- [x] AppContext에 로그 추가 메서드 구현
 
 ```typescript
 // src/contexts/AppContext.tsx (업데이트)
