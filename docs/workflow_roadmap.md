@@ -2142,8 +2142,8 @@ Tests: Android build verification"
 #### 3.4. iOS 네이티브 설정
 
 **구현**
-- [ ] Info.plist 권한 설명 추가
-- [ ] Background modes 활성화
+- [x] Info.plist 권한 설명 추가
+- [x] Background modes 활성화
 
 ```xml
 <!-- ios/RnGeolocation4CCApp/Info.plist -->

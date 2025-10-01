@@ -32,7 +32,16 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>걷기와 뛰기 활동을 감지하기 위해 위치 정보가 필요합니다</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>백그라운드에서 활동을 추적하기 위해 위치 정보가 필요합니다</string>
+	<key>NSMotionUsageDescription</key>
+	<string>걷기와 뛰기를 구분하기 위해 모션 센서가 필요합니다</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+	</array>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
