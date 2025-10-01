@@ -1850,15 +1850,15 @@ cd ../RnGeolocation-phase-3
 #### 3.1. Geolocation Service 구현
 
 **세부 계획**
-- [ ] react-native-background-geolocation API 분석
-- [ ] Service 클래스 설계
-- [ ] 이벤트 핸들러 구현
-- [ ] 활동 분류 로직 구현
+- [x] react-native-background-geolocation API 분석
+- [x] Service 클래스 설계
+- [x] 이벤트 핸들러 구현
+- [x] 활동 분류 로직 구현
 
 **TDD 사이클: GeolocationService**
 
 **테스트 작성**
-- [ ] `src/services/__tests__/GeolocationService.test.ts`
+- [x] `src/services/__tests__/GeolocationService.test.ts`
 
 ```typescript
 import { GeolocationService } from '../GeolocationService';
@@ -1900,10 +1900,10 @@ describe('GeolocationService', () => {
 });
 ```
 
-- [ ] 테스트 실행 (실패 - Red)
+- [x] 테스트 실행 (실패 - Red)
 
 **구현**
-- [ ] `src/services/GeolocationService.ts`
+- [x] `src/services/GeolocationService.ts`
 
 ```typescript
 import BackgroundGeolocation, {
@@ -2015,8 +2015,8 @@ export class GeolocationService {
 export default new GeolocationService();
 ```
 
-- [ ] 테스트 실행 (성공 - Green)
-- [ ] 리팩토링
+- [x] 테스트 실행 (성공 - Green)
+- [x] 리팩토링
 
 ```bash
 git add src/services/GeolocationService.ts src/services/__tests__/GeolocationService.test.ts
