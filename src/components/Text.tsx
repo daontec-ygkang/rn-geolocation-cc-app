@@ -11,7 +11,19 @@ export interface TextProps {
   /** Text content */
   children: React.ReactNode;
   /** Typography variant */
-  variant?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
+  variant?:
+    | 'xs'
+    | 'sm'
+    | 'base'
+    | 'lg'
+    | 'xl'
+    | '2xl'
+    | '3xl'
+    | 'caption'
+    | 'body'
+    | 'h3'
+    | 'h2'
+    | 'h1';
   /** Font weight */
   weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   /** Text color */
@@ -53,6 +65,12 @@ export const Text: React.FC<TextProps> = ({
     xl: {fontSize: theme.typography.fontSize.xl},
     '2xl': {fontSize: theme.typography.fontSize['2xl']},
     '3xl': {fontSize: theme.typography.fontSize['3xl']},
+    // Semantic variants (mapped to size variants)
+    caption: {fontSize: theme.typography.fontSize.xs},
+    body: {fontSize: theme.typography.fontSize.base},
+    h3: {fontSize: theme.typography.fontSize.lg},
+    h2: {fontSize: theme.typography.fontSize.xl},
+    h1: {fontSize: theme.typography.fontSize['2xl']},
   };
 
   const weightStyles: Record<string, TextStyle> = {

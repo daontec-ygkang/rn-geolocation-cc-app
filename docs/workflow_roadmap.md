@@ -974,20 +974,20 @@ cd ../RnGeolocation-phase-2
 
 ### ✅ 구현 작업
 
-#### 2.1. Dashboard 화면 구현
+#### ✅ 2.1. Dashboard 화면 구현
 
 **세부 계획 단계**
-- [ ] 화면 구조 분석 (프로토타입 기반)
+- [x] 화면 구조 분석 (프로토타입 기반)
   - 상태 표시 영역 (현재 활동: 걷기/뛰기/대기)
   - 제어 버튼 (시작/중지)
   - 통계 카드 (총 시간, 걷기 시간, 뛰기 시간)
   - 안내 알림
 
-- [ ] 필요한 상태 식별
+- [x] 필요한 상태 식별
   - AppContext의 `isDetecting`, `currentActivity`, `statistics` 사용
   - 로컬 UI 상태 (loading, errors)
 
-- [ ] 필요한 컴포넌트 식별
+- [x] 필요한 컴포넌트 식별
   - ActivityStatus (활동 상태 표시)
   - ControlButtons (시작/중지 버튼)
   - StatisticsCards (통계 표시)
@@ -996,7 +996,7 @@ cd ../RnGeolocation-phase-2
 **TDD 사이클: ActivityStatus 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Dashboard/__tests__/ActivityStatus.test.tsx`
+- [x] `src/screens/Dashboard/__tests__/ActivityStatus.test.tsx`
 
 ```typescript
 import { render } from '@testing-library/react-native';
@@ -1027,10 +1027,10 @@ describe('ActivityStatus Component', () => {
 });
 ```
 
-- [ ] 테스트 실행 (실패 - Red)
+- [x] 테스트 실행 (실패 - Red)
 
 **구현**
-- [ ] `src/screens/Dashboard/components/ActivityStatus.tsx` 생성
+- [x] `src/screens/Dashboard/components/ActivityStatus.tsx` 생성
 
 ```typescript
 import React from 'react';
@@ -1103,8 +1103,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-- [ ] 테스트 실행 (성공 - Green)
-- [ ] 리팩토링 및 재테스트
+- [x] 테스트 실행 (성공 - Green)
+- [x] 리팩토링 및 재테스트
 
 ```bash
 git add src/screens/Dashboard/components/ActivityStatus.tsx src/screens/Dashboard/__tests__/ActivityStatus.test.tsx
@@ -1126,7 +1126,7 @@ Tests:
 **TDD 사이클: ControlButtons 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Dashboard/__tests__/ControlButtons.test.tsx`
+- [x] `src/screens/Dashboard/__tests__/ControlButtons.test.tsx`
 
 ```typescript
 import { render, fireEvent } from '@testing-library/react-native';
@@ -1158,10 +1158,10 @@ describe('ControlButtons Component', () => {
 });
 ```
 
-- [ ] 테스트 실행 (실패 - Red)
+- [x] 테스트 실행 (실패 - Red)
 
 **구현**
-- [ ] `src/screens/Dashboard/components/ControlButtons.tsx`
+- [x] `src/screens/Dashboard/components/ControlButtons.tsx`
 
 ```typescript
 import React from 'react';
@@ -1207,8 +1207,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-- [ ] 테스트 실행 (성공 - Green)
-- [ ] 리팩토링
+- [x] 테스트 실행 (성공 - Green)
+- [x] 리팩토링
 
 ```bash
 git add src/screens/Dashboard/components/ControlButtons.tsx src/screens/Dashboard/__tests__/ControlButtons.test.tsx
@@ -1229,7 +1229,7 @@ Tests:
 **TDD 사이클: StatisticsCards 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Dashboard/__tests__/StatisticsCards.test.tsx`
+- [x] `src/screens/Dashboard/__tests__/StatisticsCards.test.tsx`
 
 ```typescript
 describe('StatisticsCards Component', () => {
@@ -1249,7 +1249,7 @@ describe('StatisticsCards Component', () => {
 ```
 
 **구현**
-- [ ] `src/screens/Dashboard/components/StatisticsCards.tsx`
+- [x] `src/screens/Dashboard/components/StatisticsCards.tsx`
 
 ```typescript
 import React from 'react';
@@ -1295,7 +1295,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
 };
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/Dashboard/components/StatisticsCards.tsx src/screens/Dashboard/__tests__/StatisticsCards.test.tsx
@@ -1314,7 +1314,7 @@ Tests:
 **메인 Dashboard 화면 통합**
 
 **테스트 작성**
-- [ ] `src/screens/__tests__/DashboardScreen.test.tsx`
+- [x] `src/screens/__tests__/DashboardScreen.test.tsx`
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
@@ -1351,7 +1351,7 @@ describe('DashboardScreen', () => {
 ```
 
 **구현**
-- [ ] `src/screens/DashboardScreen.tsx`
+- [x] `src/screens/DashboardScreen.tsx`
 
 ```typescript
 import React from 'react';
@@ -1410,7 +1410,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/DashboardScreen.tsx src/screens/__tests__/DashboardScreen.test.tsx

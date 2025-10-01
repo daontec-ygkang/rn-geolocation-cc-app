@@ -16,3 +16,7 @@ export type {SpinnerProps} from './Spinner';
 
 export {Text} from './Text';
 export type {TextProps} from './Text';
+
+export {ActivityStatus} from './ActivityStatus';
+export {ControlButtons} from './ControlButtons';
+export {StatisticsCard} from './StatisticsCard';
