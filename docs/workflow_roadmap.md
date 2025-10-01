@@ -2039,9 +2039,9 @@ Tests:
 #### 3.2. Dashboard에 실제 감지 연동
 
 **구현**
-- [ ] DashboardScreen에서 GeolocationService 사용
-- [ ] 실제 활동 데이터로 UI 업데이트
-- [ ] 통계 누적 로직 구현
+- [x] DashboardScreen에서 GeolocationService 사용
+- [x] 실제 활동 데이터로 UI 업데이트
+- [x] 통계 누적 로직 구현
 
 ```typescript
 // src/screens/DashboardScreen.tsx (업데이트)
