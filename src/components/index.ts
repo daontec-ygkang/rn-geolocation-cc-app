@@ -17,6 +17,12 @@ export type {SpinnerProps} from './Spinner';
 export {Text} from './Text';
 export type {TextProps} from './Text';
 
+export {StatusIndicator} from './StatusIndicator';
+export type {StatusIndicatorProps, StatusVariant} from './StatusIndicator';
+
+export {TabBar} from './TabBar';
+export type {TabBarProps, Tab} from './TabBar';
+
 export {ActivityStatus} from './ActivityStatus';
 export {ControlButtons} from './ControlButtons';
 export {StatisticsCard} from './StatisticsCard';
