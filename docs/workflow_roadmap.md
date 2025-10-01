@@ -974,20 +974,20 @@ cd ../RnGeolocation-phase-2
 
 ### ✅ 구현 작업
 
-#### 2.1. Dashboard 화면 구현
+#### ✅ 2.1. Dashboard 화면 구현
 
 **세부 계획 단계**
-- [ ] 화면 구조 분석 (프로토타입 기반)
+- [x] 화면 구조 분석 (프로토타입 기반)
   - 상태 표시 영역 (현재 활동: 걷기/뛰기/대기)
   - 제어 버튼 (시작/중지)
   - 통계 카드 (총 시간, 걷기 시간, 뛰기 시간)
   - 안내 알림
 
-- [ ] 필요한 상태 식별
+- [x] 필요한 상태 식별
   - AppContext의 `isDetecting`, `currentActivity`, `statistics` 사용
   - 로컬 UI 상태 (loading, errors)
 
-- [ ] 필요한 컴포넌트 식별
+- [x] 필요한 컴포넌트 식별
   - ActivityStatus (활동 상태 표시)
   - ControlButtons (시작/중지 버튼)
   - StatisticsCards (통계 표시)
@@ -996,7 +996,7 @@ cd ../RnGeolocation-phase-2
 **TDD 사이클: ActivityStatus 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Dashboard/__tests__/ActivityStatus.test.tsx`
+- [x] `src/screens/Dashboard/__tests__/ActivityStatus.test.tsx`
 
 ```typescript
 import { render } from '@testing-library/react-native';
@@ -1027,10 +1027,10 @@ describe('ActivityStatus Component', () => {
 });
 ```
 
-- [ ] 테스트 실행 (실패 - Red)
+- [x] 테스트 실행 (실패 - Red)
 
 **구현**
-- [ ] `src/screens/Dashboard/components/ActivityStatus.tsx` 생성
+- [x] `src/screens/Dashboard/components/ActivityStatus.tsx` 생성
 
 ```typescript
 import React from 'react';
@@ -1103,8 +1103,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-- [ ] 테스트 실행 (성공 - Green)
-- [ ] 리팩토링 및 재테스트
+- [x] 테스트 실행 (성공 - Green)
+- [x] 리팩토링 및 재테스트
 
 ```bash
 git add src/screens/Dashboard/components/ActivityStatus.tsx src/screens/Dashboard/__tests__/ActivityStatus.test.tsx
@@ -1126,7 +1126,7 @@ Tests:
 **TDD 사이클: ControlButtons 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Dashboard/__tests__/ControlButtons.test.tsx`
+- [x] `src/screens/Dashboard/__tests__/ControlButtons.test.tsx`
 
 ```typescript
 import { render, fireEvent } from '@testing-library/react-native';
@@ -1158,10 +1158,10 @@ describe('ControlButtons Component', () => {
 });
 ```
 
-- [ ] 테스트 실행 (실패 - Red)
+- [x] 테스트 실행 (실패 - Red)
 
 **구현**
-- [ ] `src/screens/Dashboard/components/ControlButtons.tsx`
+- [x] `src/screens/Dashboard/components/ControlButtons.tsx`
 
 ```typescript
 import React from 'react';
@@ -1207,8 +1207,8 @@ const styles = StyleSheet.create({
 });
 ```
 
-- [ ] 테스트 실행 (성공 - Green)
-- [ ] 리팩토링
+- [x] 테스트 실행 (성공 - Green)
+- [x] 리팩토링
 
 ```bash
 git add src/screens/Dashboard/components/ControlButtons.tsx src/screens/Dashboard/__tests__/ControlButtons.test.tsx
@@ -1229,7 +1229,7 @@ Tests:
 **TDD 사이클: StatisticsCards 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Dashboard/__tests__/StatisticsCards.test.tsx`
+- [x] `src/screens/Dashboard/__tests__/StatisticsCards.test.tsx`
 
 ```typescript
 describe('StatisticsCards Component', () => {
@@ -1249,7 +1249,7 @@ describe('StatisticsCards Component', () => {
 ```
 
 **구현**
-- [ ] `src/screens/Dashboard/components/StatisticsCards.tsx`
+- [x] `src/screens/Dashboard/components/StatisticsCards.tsx`
 
 ```typescript
 import React from 'react';
@@ -1295,7 +1295,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({
 };
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/Dashboard/components/StatisticsCards.tsx src/screens/Dashboard/__tests__/StatisticsCards.test.tsx
@@ -1314,7 +1314,7 @@ Tests:
 **메인 Dashboard 화면 통합**
 
 **테스트 작성**
-- [ ] `src/screens/__tests__/DashboardScreen.test.tsx`
+- [x] `src/screens/__tests__/DashboardScreen.test.tsx`
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
@@ -1351,7 +1351,7 @@ describe('DashboardScreen', () => {
 ```
 
 **구현**
-- [ ] `src/screens/DashboardScreen.tsx`
+- [x] `src/screens/DashboardScreen.tsx`
 
 ```typescript
 import React from 'react';
@@ -1410,7 +1410,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/DashboardScreen.tsx src/screens/__tests__/DashboardScreen.test.tsx
@@ -1429,17 +1429,17 @@ Tests:
 - ✅ User interactions"
 ```
 
-#### 2.2. Permissions 화면 구현
+#### ✅ 2.2. Permissions 화면 구현
 
 **세부 계획**
-- [ ] 권한 카드 컴포넌트 (Location, Activity Recognition, Notifications)
-- [ ] 권한 요청 로직
-- [ ] 권한 상태 표시
+- [x] 권한 카드 컴포넌트 (Location, Activity Recognition, Notifications)
+- [x] 권한 요청 로직
+- [x] 권한 상태 표시
 
 **TDD 사이클: PermissionCard 컴포넌트**
 
 **테스트 작성**
-- [ ] `src/screens/Permissions/__tests__/PermissionCard.test.tsx`
+- [x] `src/screens/Permissions/__tests__/PermissionCard.test.tsx`
 
 ```typescript
 describe('PermissionCard Component', () => {
@@ -1479,7 +1479,7 @@ describe('PermissionCard Component', () => {
 ```
 
 **구현**
-- [ ] `src/screens/Permissions/components/PermissionCard.tsx`
+- [x] `src/screens/Permissions/components/PermissionCard.tsx`
 
 ```typescript
 import React from 'react';
@@ -1536,7 +1536,7 @@ export const PermissionCard: React.FC<PermissionCardProps> = ({
 };
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/Permissions/components/PermissionCard.tsx src/screens/Permissions/__tests__/PermissionCard.test.tsx
@@ -1556,7 +1556,7 @@ Tests:
 **메인 Permissions 화면 통합**
 
 **테스트 작성**
-- [ ] `src/screens/__tests__/PermissionsScreen.test.tsx`
+- [x] `src/screens/__tests__/PermissionsScreen.test.tsx`
 
 ```typescript
 describe('PermissionsScreen', () => {
@@ -1585,7 +1585,7 @@ describe('PermissionsScreen', () => {
 ```
 
 **구현**
-- [ ] `src/screens/PermissionsScreen.tsx`
+- [x] `src/screens/PermissionsScreen.tsx`
 
 ```typescript
 import React from 'react';
@@ -1668,7 +1668,7 @@ export const PermissionsScreen = ({ navigation }) => {
 };
 ```
 
-- [ ] 테스트 및 커밋
+- [x] 테스트 및 커밋
 
 ```bash
 git add src/screens/PermissionsScreen.tsx src/screens/__tests__/PermissionsScreen.test.tsx
@@ -1689,9 +1689,9 @@ Tests:
 
 #### 2.3. 네비게이션 연동
 
-- [ ] RootNavigator에 실제 스크린 연결
-- [ ] MainNavigator 탭 구성 업데이트
-- [ ] 네비게이션 플로우 테스트
+- [x] RootNavigator에 실제 스크린 연결
+- [x] MainNavigator 탭 구성 업데이트
+- [x] 네비게이션 플로우 테스트
 
 ```bash
 git add src/navigation/
@@ -1710,22 +1710,22 @@ Tests:
 
 ### 🧪 테스트 작업
 
-#### 2.4. 통합 테스트
+#### ✅ 2.4. 통합 테스트
 
-- [ ] Dashboard 화면 전체 플로우 테스트
+- [x] Dashboard 화면 전체 플로우 테스트
   - 시작 버튼 → 중지 버튼 전환
   - 상태 표시 업데이트
   - 통계 표시 업데이트
 
-- [ ] Permissions 화면 플로우 테스트
+- [x] Permissions 화면 플로우 테스트
   - 권한 요청 → 권한 부여 → 상태 업데이트
   - 계속하기 버튼 활성화
 
-- [ ] 네비게이션 통합 테스트
+- [x] 네비게이션 통합 테스트
   - Permissions → Dashboard 이동
   - 탭 전환
 
-- [ ] 빌드 및 수동 테스트
+- [x] 빌드 및 수동 테스트
 ```bash
 npm test -- --coverage
 npm run android

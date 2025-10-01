@@ -5,6 +5,10 @@
 
 export type ActivityType = 'inactive' | 'walking' | 'running';
 
+export type DetectionMode = 'vehicle-exit' | 'motion' | 'integrated';
+
+export type VehicleState = 'driving' | 'parked' | 'exited' | null;
+
 export interface PermissionsState {
   location: boolean;
   activity: boolean;
@@ -33,6 +37,8 @@ export interface StatisticsState {
 export interface AppState {
   isDetecting: boolean;
   currentActivity: ActivityType;
+  detectionMode: DetectionMode;
+  vehicleState: VehicleState;
   permissions: PermissionsState;
   settings: SettingsState;
   logs: Log[];
@@ -42,6 +48,8 @@ export interface AppState {
 export const initialAppState: AppState = {
   isDetecting: false,
   currentActivity: 'inactive',
+  detectionMode: 'vehicle-exit',
+  vehicleState: null,
   permissions: {
     location: false,
     activity: false,
