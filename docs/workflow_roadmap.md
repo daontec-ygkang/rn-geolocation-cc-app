@@ -1850,15 +1850,15 @@ cd ../RnGeolocation-phase-3
 #### 3.1. Geolocation Service 구현
 
 **세부 계획**
-- [ ] react-native-background-geolocation API 분석
-- [ ] Service 클래스 설계
-- [ ] 이벤트 핸들러 구현
-- [ ] 활동 분류 로직 구현
+- [x] react-native-background-geolocation API 분석
+- [x] Service 클래스 설계
+- [x] 이벤트 핸들러 구현
+- [x] 활동 분류 로직 구현
 
 **TDD 사이클: GeolocationService**
 
 **테스트 작성**
-- [ ] `src/services/__tests__/GeolocationService.test.ts`
+- [x] `src/services/__tests__/GeolocationService.test.ts`
 
 ```typescript
 import { GeolocationService } from '../GeolocationService';
@@ -1900,10 +1900,10 @@ describe('GeolocationService', () => {
 });
 ```
 
-- [ ] 테스트 실행 (실패 - Red)
+- [x] 테스트 실행 (실패 - Red)
 
 **구현**
-- [ ] `src/services/GeolocationService.ts`
+- [x] `src/services/GeolocationService.ts`
 
 ```typescript
 import BackgroundGeolocation, {
@@ -2015,8 +2015,8 @@ export class GeolocationService {
 export default new GeolocationService();
 ```
 
-- [ ] 테스트 실행 (성공 - Green)
-- [ ] 리팩토링
+- [x] 테스트 실행 (성공 - Green)
+- [x] 리팩토링
 
 ```bash
 git add src/services/GeolocationService.ts src/services/__tests__/GeolocationService.test.ts
@@ -2039,9 +2039,9 @@ Tests:
 #### 3.2. Dashboard에 실제 감지 연동
 
 **구현**
-- [ ] DashboardScreen에서 GeolocationService 사용
-- [ ] 실제 활동 데이터로 UI 업데이트
-- [ ] 통계 누적 로직 구현
+- [x] DashboardScreen에서 GeolocationService 사용
+- [x] 실제 활동 데이터로 UI 업데이트
+- [x] 통계 누적 로직 구현
 
 ```typescript
 // src/screens/DashboardScreen.tsx (업데이트)
@@ -2108,8 +2108,8 @@ Tests:
 #### 3.3. Android 네이티브 설정
 
 **구현**
-- [ ] AndroidManifest.xml 권한 추가
-- [ ] Foreground Service 설정
+- [x] AndroidManifest.xml 권한 추가
+- [x] Foreground Service 설정
 
 ```xml
 <!-- android/app/src/main/AndroidManifest.xml -->
@@ -2142,8 +2142,8 @@ Tests: Android build verification"
 #### 3.4. iOS 네이티브 설정
 
 **구현**
-- [ ] Info.plist 권한 설명 추가
-- [ ] Background modes 활성화
+- [x] Info.plist 권한 설명 추가
+- [x] Background modes 활성화
 
 ```xml
 <!-- ios/RnGeolocation4CCApp/Info.plist -->
@@ -2181,8 +2181,8 @@ Tests: iOS build verification"
 #### 3.5. 로그 기능 구현
 
 **구현**
-- [ ] 활동 감지 시 로그 생성
-- [ ] AppContext에 로그 추가 메서드 구현
+- [x] 활동 감지 시 로그 생성
+- [x] AppContext에 로그 추가 메서드 구현
 
 ```typescript
 // src/contexts/AppContext.tsx (업데이트)
@@ -2235,19 +2235,19 @@ Tests:
 
 #### 3.6. 통합 테스트
 
-- [ ] 실제 디바이스에서 모션 감지 테스트 (중요!)
+- [x] 실제 디바이스에서 모션 감지 테스트 (중요!)
   - Android 디바이스에서 걷기 테스트
   - Android 디바이스에서 뛰기 테스트
   - 활동 전환 테스트
 
-- [ ] 백그라운드 모드 테스트
+- [x] 백그라운드 모드 테스트
   - 앱을 백그라운드로 전환 후 걷기
   - 포그라운드로 복귀 시 상태 확인
 
-- [ ] 권한 플로우 테스트
+- [x] 권한 플로우 테스트
   - 권한 요청 → 허용 → 감지 시작
 
-- [ ] 성능 테스트
+- [x] 성능 테스트
   - 배터리 소모 측정 (1시간 감지)
   - 메모리 사용량 모니터링
   - CPU 사용량 확인

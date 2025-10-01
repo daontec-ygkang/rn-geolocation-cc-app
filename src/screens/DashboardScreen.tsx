@@ -1,16 +1,18 @@
 /**
  * Dashboard Screen
  * Tab-based test dashboard matching prototype design
+ * Integrated with GeolocationService for real motion detection
  */
 
-import React, {useCallback} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
+import {View, StyleSheet, ScrollView, Alert} from 'react-native';
 import {useTheme} from '../theme/ThemeContext';
 import {useApp} from '../contexts/AppContext';
 import {StatusIndicator, TabBar, Card, Text, Button, Badge} from '../components';
+import GeolocationService from '../services/GeolocationService';
 import type {StatusVariant} from '../components/StatusIndicator';
 import type {DashboardScreenNavigationProp} from '../navigation/types';
-import type {DetectionMode} from '../types/AppState';
+import type {DetectionMode, ActivityType} from '../types/AppState';
 
 interface DashboardScreenProps {
   navigation: DashboardScreenNavigationProp;
@@ -24,24 +26,153 @@ const TABS = [
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
   const {theme} = useTheme();
-  const {state, updateState} = useApp();
+  const {state, updateState, addLog} = useApp();
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const activityStartTime = useRef<number | null>(null);
+
+  // Initialize GeolocationService on mount
+  useEffect(() => {
+    let mounted = true;
+
+    const initializeService = async () => {
+      try {
+        await GeolocationService.init();
+        if (mounted) {
+          setIsInitialized(true);
+          console.log('[DashboardScreen] GeolocationService initialized');
+        }
+      } catch (error) {
+        console.error('[DashboardScreen] Initialization failed:', error);
+        if (mounted) {
+          Alert.alert(
+            '초기화 실패',
+            '모션 감지 서비스를 초기화하지 못했습니다.',
+          );
+        }
+      }
+    };
+
+    initializeService();
+
+    // Cleanup on unmount
+    return () => {
+      mounted = false;
+      if (GeolocationService.isTracking()) {
+        GeolocationService.stop().catch(console.error);
+      }
+    };
+  }, []);
 
   const handleTabChange = useCallback(
     (tabId: DetectionMode) => {
-      updateState('detectionMode', tabId);
+      // Stop detection when changing tabs
+      if (state.isDetecting) {
+        GeolocationService.stop()
+          .then(() => {
+            updateState('isDetecting', false);
+            updateState('currentActivity', 'inactive');
+            updateState('vehicleState', null);
+            updateState('detectionMode', tabId);
+          })
+          .catch(error => {
+            console.error('[DashboardScreen] Stop failed on tab change:', error);
+          });
+      } else {
+        updateState('detectionMode', tabId);
+      }
     },
-    [updateState],
+    [state.isDetecting, updateState],
   );
 
-  const handleStartStop = useCallback(() => {
-    if (state.isDetecting) {
-      updateState('isDetecting', false);
-      updateState('currentActivity', 'inactive');
-      updateState('vehicleState', null);
-    } else {
-      updateState('isDetecting', true);
+  // Activity callback for GeolocationService
+  const handleActivityChange = useCallback(
+    (activity: ActivityType) => {
+      console.log('[DashboardScreen] Activity detected:', activity);
+
+      // Update current activity
+      const previousActivity = state.currentActivity;
+      updateState('currentActivity', activity);
+
+      // Handle activity changes with logging
+      if (activity !== 'inactive' && activity !== previousActivity) {
+        // Record start time for new activity
+        activityStartTime.current = Date.now();
+      } else if (activity === 'inactive' && activityStartTime.current) {
+        // Calculate duration when activity ends
+        const duration = Math.floor((Date.now() - activityStartTime.current) / 1000);
+
+        // Add log entry and update statistics
+        if (previousActivity === 'walking' || previousActivity === 'running') {
+          addLog(previousActivity, duration);
+          console.log(
+            `[DashboardScreen] Log added: ${previousActivity} for ${duration}s`,
+          );
+        }
+
+        activityStartTime.current = null;
+      }
+    },
+    [state.currentActivity, updateState, addLog],
+  );
+
+  const handleStartStop = useCallback(async () => {
+    if (!isInitialized) {
+      Alert.alert('서비스 미준비', '모션 감지 서비스가 아직 준비되지 않았습니다.');
+      return;
     }
-  }, [state.isDetecting, updateState]);
+
+    setIsLoading(true);
+
+    try {
+      if (state.isDetecting) {
+        // Stop detection
+        await GeolocationService.stop();
+
+        // Save final activity duration and log
+        if (activityStartTime.current) {
+          const duration = Math.floor(
+            (Date.now() - activityStartTime.current) / 1000,
+          );
+          const currentActivity = state.currentActivity;
+
+          if (currentActivity === 'walking' || currentActivity === 'running') {
+            addLog(currentActivity, duration);
+            console.log(
+              `[DashboardScreen] Final log added: ${currentActivity} for ${duration}s`,
+            );
+          }
+
+          activityStartTime.current = null;
+        }
+
+        updateState('isDetecting', false);
+        updateState('currentActivity', 'inactive');
+        updateState('vehicleState', null);
+        console.log('[DashboardScreen] Detection stopped');
+      } else {
+        // Start detection
+        await GeolocationService.start(handleActivityChange);
+        updateState('isDetecting', true);
+        console.log('[DashboardScreen] Detection started');
+      }
+    } catch (error) {
+      console.error('[DashboardScreen] Start/Stop error:', error);
+      Alert.alert(
+        '오류',
+        `모션 감지를 ${state.isDetecting ? '중지' : '시작'}하지 못했습니다.`,
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [
+    isInitialized,
+    state.isDetecting,
+    state.currentActivity,
+    updateState,
+    addLog,
+    handleActivityChange,
+  ]);
 
   // Render Vehicle Exit Tab
   const renderVehicleExitTab = () => {
@@ -113,6 +244,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
             title={state.isDetecting ? '차량 감지 중지' : '차량 감지 시작'}
             variant={state.isDetecting ? 'danger' : 'primary'}
             onPress={handleStartStop}
+            disabled={!isInitialized || isLoading}
             testID="vehicle-button"
             style={styles.button}
           />
@@ -193,6 +325,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
             title={state.isDetecting ? '모션 감지 중지' : '모션 감지 시작'}
             variant={state.isDetecting ? 'danger' : 'success'}
             onPress={handleStartStop}
+            disabled={!isInitialized || isLoading}
             testID="motion-button"
             style={styles.button}
           />
@@ -282,6 +415,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = () => {
             title={state.isDetecting ? '통합 테스트 중지' : '통합 테스트 시작'}
             variant={state.isDetecting ? 'danger' : 'primary'}
             onPress={handleStartStop}
+            disabled={!isInitialized || isLoading}
             testID="integrated-button"
             style={styles.button}
           />
