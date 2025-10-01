@@ -47,6 +47,7 @@ export const MainNavigator: React.FC = () => {
           elevation: 0,
           shadowOpacity: 0,
         },
+        tabBarIcon: () => null, // Explicitly disable icons for Phase 1
       }}>
       <Tab.Screen
         name="Dashboard"
