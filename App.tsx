@@ -1,45 +1,38 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
+ * React Native Motion Detection App
+ * Main application entry point with all infrastructure providers
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import React from 'react';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {NavigationContainer} from '@react-navigation/native';
+import {AppProvider} from './src/contexts/AppContext';
+import {ThemeProvider} from './src/theme/ThemeContext';
+import {RootNavigator} from './src/navigation/RootNavigator';
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
+/**
+ * Main App Component
+ *
+ * Provider hierarchy:
+ * 1. SafeAreaProvider - Safe area insets for device notches
+ * 2. AppProvider - Global app state management
+ * 3. ThemeProvider - Design system and theme support
+ * 4. NavigationContainer - React Navigation integration
+ * 5. RootNavigator - App navigation structure
+ */
+function App(): React.JSX.Element {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <AppProvider>
+        <ThemeProvider>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </ThemeProvider>
+      </AppProvider>
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
